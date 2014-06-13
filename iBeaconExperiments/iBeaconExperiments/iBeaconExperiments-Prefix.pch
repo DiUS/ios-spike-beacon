@@ -15,6 +15,7 @@
     #import <Foundation/Foundation.h>
     #import <CoreBluetooth/CoreBluetooth.h>
     #import <CoreLocation/CoreLocation.h>
+    #import "Constants.h"
 #endif
 
 #ifdef DEBUG

@@ -86,22 +86,50 @@
     
     if (!cell)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                      reuseIdentifier:cellID];
+        cell = [[UITableViewCell alloc]
+                initWithStyle:UITableViewCellStyleSubtitle
+                reuseIdentifier:cellID];
     }
     
     CLBeacon *beacon = self.beacons[indexPath.row];
     
+    NSDictionary *beaconData = self.estimoteBeaconData[
+                                [self keyForUUID:beacon.proximityUUID.UUIDString
+                                           major:beacon.major.integerValue
+                                           minor:beacon.minor.integerValue]
+                               ];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"Beacon"];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",
+                           beaconData ? beaconData[kColourString] : @"Beacon"];
+    
     cell.detailTextLabel.text =
-        [NSString stringWithFormat:@"Major: %d, Minor: %d",
+        [NSString stringWithFormat:@"Major: %d, Minor: %d, RSSI: %d, Acc: %f",
             beacon.major.integerValue,
-            beacon.minor.integerValue];
+            beacon.minor.integerValue,
+            beacon.rssi,
+            beacon.accuracy
+         ];
+
     
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView
+                          willDisplayCell:(UITableViewCell *)cell
+                        forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CLBeacon *beacon = self.beacons[indexPath.row];
+    
+    NSDictionary *beaconData = self.estimoteBeaconData[
+                               [self keyForUUID:beacon.proximityUUID.UUIDString
+                                          major:beacon.major.integerValue
+                                          minor:beacon.minor.integerValue]
+                               ];
+    
+    cell.contentView.backgroundColor = beaconData[kUIColour];
+}
 
 @end

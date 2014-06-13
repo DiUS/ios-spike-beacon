@@ -10,13 +10,6 @@
 
 @interface BaseExperimentViewController : UIViewController <CLLocationManagerDelegate>
 
-extern NSString *kUUID;
-extern NSString *kMajor;
-extern NSString *kMinor;
-extern NSString *kGreen;
-extern NSString *kPurple;
-extern NSString *kBlue;
-
 @property (nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) NSDictionary *estimoteBeaconData;
 

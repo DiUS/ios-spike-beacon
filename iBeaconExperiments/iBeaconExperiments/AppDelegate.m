@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "SharedUUIDRecognitionViewController.h"
 #import "BaseExperimentViewController.h"
+#import "AveragerViewController.h"
 
 @interface AppDelegate() <UITableViewDataSource, UITableViewDelegate>
 
@@ -33,6 +34,7 @@
     
     self.experimentVCClasses = @[
                                  [SharedUUIDRecognitionViewController class],
+                                 [AveragerViewController class]
                                  ];
     UITableViewController *rootVC = [[UITableViewController alloc] init];
     rootVC.tableView.delegate = self;

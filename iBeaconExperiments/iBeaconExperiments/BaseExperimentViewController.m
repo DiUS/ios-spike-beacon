@@ -12,13 +12,6 @@
 
 @end
 
-const NSString *kGreen = @"green";
-const NSString *kBlue = @"blue";
-const NSString *kPurple = @"purple";
-const NSString *kUUID = @"uuid";
-const NSString *kMajor = @"major";
-const NSString *kMinor = @"minor";
-
 @implementation BaseExperimentViewController
 
 #pragma mark - Overrides
@@ -70,39 +63,78 @@ const NSString *kMinor = @"minor";
     {
         NSString *uuid = [[self genericUUID] UUIDString];
         
-        NSDictionary *green = [NSDictionary dictionaryWithObjects:@[uuid,
-                                                                    @50730,
-                                                                    @33558
-                                                                    ]
-                                                          forKeys:@[kUUID,
-                                                                    kMajor,
-                                                                    kMinor]
+        NSDictionary *green = [NSDictionary dictionaryWithObjects:@[
+                                            kGreen,
+                                            [UIColor colorWithRed:127.0/255.0f
+                                                            green:255/255.0f
+                                                             blue:154.0/255.0f
+                                                            alpha:1.0f],
+                                            uuid,
+                                            @50730,
+                                            @33558
+                                            ]
+                                  forKeys:@[kColourString,
+                                            kUIColour,
+                                            kUUID,
+                                            kMajor,
+                                            kMinor]
                                ];
         
-        NSDictionary *purple = [NSDictionary dictionaryWithObjects:@[uuid,
-                                                                    @15295,
-                                                                    @49236
-                                                                    ]
-                                                          forKeys:@[kUUID,
-                                                                    kMajor,
-                                                                    kMinor]
+        NSDictionary *purple = [NSDictionary dictionaryWithObjects:@[
+                                             kPurple,
+                                             [UIColor colorWithRed:94.0/255.0f
+                                                             green:77.0/255.0f
+                                                              blue:143.0/255.0f
+                                                             alpha:1.0f],
+                                             uuid,
+                                            @15295,
+                                            @49236
+                                            ]
+                                  forKeys:@[kColourString,
+                                            kUIColour,
+                                            kUUID,
+                                            kMajor,
+                                            kMinor]
                                 ];
         
-        NSDictionary *blue = [NSDictionary dictionaryWithObjects:@[uuid,
-                                                                    @23491,
-                                                                    @36886
-                                                                    ]
-                                                          forKeys:@[kUUID,
-                                                                    kMajor,
-                                                                    kMinor]
+        NSDictionary *blue = [NSDictionary dictionaryWithObjects:@[
+                                           kBlue,
+                                           [UIColor colorWithRed:133.0/255.0f
+                                                           green:222.0/255.0f
+                                                            blue:255.0/255.0f
+                                                           alpha:1.0f],
+                                           uuid,
+                                            @23491,
+                                            @36886
+                                            ]
+                                  forKeys:@[kColourString,
+                                            kUIColour,
+                                            kUUID,
+                                            kMajor,
+                                            kMinor]
                               ];
+        
+        NSString *greenKey = [self keyForUUID:green[kUUID]
+                                major:((NSNumber *)green[kMajor]).integerValue
+                                minor:((NSNumber *)green[kMinor]).integerValue
+                              ];
+
+        NSString *purpleKey = [self keyForUUID:purple[kUUID]
+                            major:((NSNumber *)purple[kMajor]).integerValue
+                            minor:((NSNumber *)purple[kMinor]).integerValue
+                              ];
+        
+        NSString *blueKey = [self keyForUUID:blue[kUUID]
+                                major:((NSNumber *)blue[kMajor]).integerValue
+                                minor:((NSNumber *)blue[kMinor]).integerValue
+                               ];
         
         _estimoteBeaconData = [NSDictionary dictionaryWithObjects:@[green,
                                                                     purple,
                                                                     blue]
-                                                          forKeys:@[kGreen,
-                                                                    kPurple,
-                                                                    kBlue]
+                                                          forKeys:@[greenKey,
+                                                                    purpleKey,
+                                                                    blueKey]
                                ];
     }
     

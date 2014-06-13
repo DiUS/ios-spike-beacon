@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		B62644BE194A6FB900DE6E8A /* BaseExperimentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */; };
+		B62644C1194ABFCC00DE6E8A /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644C0194ABFCC00DE6E8A /* Constants.m */; };
+		B62644C5194AC2C400DE6E8A /* AveragerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644C3194AC2C400DE6E8A /* AveragerViewController.m */; };
+		B62644C6194AC2C400DE6E8A /* AveragerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B62644C4194AC2C400DE6E8A /* AveragerViewController.xib */; };
 		B6A7D88319493D14000964DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88219493D14000964DA /* Foundation.framework */; };
 		B6A7D88519493D14000964DA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88419493D14000964DA /* CoreGraphics.framework */; };
 		B6A7D88719493D14000964DA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88619493D14000964DA /* UIKit.framework */; };
@@ -39,6 +42,11 @@
 
 /* Begin PBXFileReference section */
 		B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseExperimentTests.m; sourceTree = "<group>"; };
+		B62644BF194ABFCC00DE6E8A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		B62644C0194ABFCC00DE6E8A /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		B62644C2194AC2C400DE6E8A /* AveragerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AveragerViewController.h; sourceTree = "<group>"; };
+		B62644C3194AC2C400DE6E8A /* AveragerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AveragerViewController.m; sourceTree = "<group>"; };
+		B62644C4194AC2C400DE6E8A /* AveragerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AveragerViewController.xib; sourceTree = "<group>"; };
 		B6A7D87F19493D14000964DA /* iBeaconExperiments.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iBeaconExperiments.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6A7D88219493D14000964DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B6A7D88419493D14000964DA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -125,10 +133,12 @@
 		B6A7D88819493D14000964DA /* iBeaconExperiments */ = {
 			isa = PBXGroup;
 			children = (
-				B6A7D8B219493D86000964DA /* Views */,
-				B6A7D8B119493D7B000964DA /* ViewControllers */,
 				B6A7D89119493D14000964DA /* AppDelegate.h */,
 				B6A7D89219493D14000964DA /* AppDelegate.m */,
+				B62644BF194ABFCC00DE6E8A /* Constants.h */,
+				B62644C0194ABFCC00DE6E8A /* Constants.m */,
+				B6A7D8B219493D86000964DA /* Views */,
+				B6A7D8B119493D7B000964DA /* ViewControllers */,
 				B6A7D89419493D14000964DA /* Images.xcassets */,
 				B6A7D88919493D14000964DA /* Supporting Files */,
 			);
@@ -173,6 +183,9 @@
 				B6A7D8B319494358000964DA /* SharedUUIDRecognitionViewController.h */,
 				B6A7D8B419494358000964DA /* SharedUUIDRecognitionViewController.m */,
 				B6A7D8B519494358000964DA /* SharedUUIDRecognitionViewController.xib */,
+				B62644C2194AC2C400DE6E8A /* AveragerViewController.h */,
+				B62644C3194AC2C400DE6E8A /* AveragerViewController.m */,
+				B62644C4194AC2C400DE6E8A /* AveragerViewController.xib */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -262,6 +275,7 @@
 				B6A7D8B719494358000964DA /* SharedUUIDRecognitionViewController.xib in Resources */,
 				B6A7D88D19493D14000964DA /* InfoPlist.strings in Resources */,
 				B6A7D89519493D14000964DA /* Images.xcassets in Resources */,
+				B62644C6194AC2C400DE6E8A /* AveragerViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,10 +294,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B62644C1194ABFCC00DE6E8A /* Constants.m in Sources */,
 				B6A7D8BB19496128000964DA /* BaseExperimentViewController.m in Sources */,
 				B6A7D89319493D14000964DA /* AppDelegate.m in Sources */,
 				B6A7D88F19493D14000964DA /* main.m in Sources */,
 				B6A7D8B619494358000964DA /* SharedUUIDRecognitionViewController.m in Sources */,
+				B62644C5194AC2C400DE6E8A /* AveragerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
