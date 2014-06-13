@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B62644BE194A6FB900DE6E8A /* BaseExperimentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */; };
 		B6A7D88319493D14000964DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88219493D14000964DA /* Foundation.framework */; };
 		B6A7D88519493D14000964DA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88419493D14000964DA /* CoreGraphics.framework */; };
 		B6A7D88719493D14000964DA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D88619493D14000964DA /* UIKit.framework */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseExperimentTests.m; sourceTree = "<group>"; };
 		B6A7D87F19493D14000964DA /* iBeaconExperiments.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iBeaconExperiments.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6A7D88219493D14000964DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B6A7D88419493D14000964DA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -147,6 +149,7 @@
 		B6A7D8A119493D14000964DA /* iBeaconExperimentsTests */ = {
 			isa = PBXGroup;
 			children = (
+				B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */,
 				B6A7D8A719493D14000964DA /* iBeaconExperimentsTests.m */,
 				B6A7D8A219493D14000964DA /* Supporting Files */,
 			);
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6A7D8A819493D14000964DA /* iBeaconExperimentsTests.m in Sources */,
+				B62644BE194A6FB900DE6E8A /* BaseExperimentTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

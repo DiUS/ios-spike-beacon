@@ -24,5 +24,8 @@ extern NSString *kBlue;
 - (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID
                        andIdentifier:(NSString*)identifier;
 - (void)deregisterBeaconRegionByIdentifier:(NSString*)identifier;
+- (NSString *)keyForUUID:(NSString *)uuid
+                   major:(NSInteger)major
+                   minor:(NSInteger)minor;
 
 @end

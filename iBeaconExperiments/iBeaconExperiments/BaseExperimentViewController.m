@@ -109,6 +109,18 @@ const NSString *kMinor = @"minor";
     return _estimoteBeaconData;
 }
 
+- (NSString *)keyForUUID:(NSString *)uuid
+                   major:(NSInteger)major
+                   minor:(NSInteger)minor
+{
+    NSString *key = [NSString stringWithFormat:@"%@%u%u",
+                         uuid,
+                         major,
+                         minor];    
+    
+    return key;
+}
+
 - (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID
                        andIdentifier:(NSString*)identifier
 {
@@ -136,11 +148,6 @@ const NSString *kMinor = @"minor";
 
 #pragma mark - Private
 
-- (void)invalidate
-{
-    // override
-}
-
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager
@@ -165,15 +172,14 @@ const NSString *kMinor = @"minor";
         didRangeBeacons:(NSArray *)beacons
                inRegion:(CLBeaconRegion *)region
 {
-//    DLog(@"Did Range Beacons");
     
 }
 
 - (void)locationManager:(CLLocationManager *)manager
     didStartMonitoringForRegion:(CLRegion *)region
 {
-    DLog(@"Did start monitoring region. Total regions: %d",
-         manager.monitoredRegions.count);
+    DLog(@"Did start monitoring region. Total regions: %lu",
+         (unsigned long)manager.monitoredRegions.count);
     
     [manager requestStateForRegion:region];
 }
