@@ -10,6 +10,8 @@
 
 @interface BaseExperimentViewController ()
 
+@property (nonatomic) NSFileManager *fileManager;
+
 @end
 
 @implementation BaseExperimentViewController
@@ -208,6 +210,28 @@
 }
 
 #pragma mark - Private
+
+- (NSFileManager *)fileManager
+{
+    if (!_fileManager)
+        _fileManager = [[NSFileManager alloc] init];
+    
+    return _fileManager;
+}
+
+- (NSURL *)documentFolderURL
+{
+    NSArray *urls = [self.fileManager URLsForDirectory:NSDocumentDirectory
+                                             inDomains:NSUserDomainMask];
+    NSURL *documentsFolder = nil;
+    
+    if ([urls count] > 0)
+        documentsFolder = urls[0];
+    else
+        NSLog(@"Could not find the Documents folder.");
+    
+    return documentsFolder;
+}
 
 #pragma mark - CLLocationManagerDelegate
 

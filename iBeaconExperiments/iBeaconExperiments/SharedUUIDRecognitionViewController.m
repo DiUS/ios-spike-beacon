@@ -21,7 +21,7 @@
     [super viewDidLoad];
     
     [self registerBeaconRegionWithUUID:[self genericUUID]
-                         andIdentifier:@"estimote"];
+                         andIdentifier:@"estimoteS"];
 }
 
 - (NSString *)title
@@ -122,4 +122,5 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     cell.contentView.backgroundColor = beaconData[kUIColour];
 }
+
 @end
