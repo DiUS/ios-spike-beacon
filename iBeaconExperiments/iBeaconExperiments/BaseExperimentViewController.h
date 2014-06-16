@@ -20,5 +20,6 @@
 - (NSString *)keyForUUID:(NSString *)uuid
                    major:(NSInteger)major
                    minor:(NSInteger)minor;
+- (NSString *)proximityStringForIndex:(NSInteger)index;
 
 @end

@@ -16,15 +16,6 @@
 
 @implementation SharedUUIDRecognitionViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -70,10 +61,10 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView
-            titleForHeaderInSection:(NSInteger)section
+titleForHeaderInSection:(NSInteger)section
 {
     return [NSString stringWithFormat:@"UUID: %@",
-                                [[self genericUUID] UUIDString]];
+            [[self genericUUID] UUIDString]];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -94,23 +85,23 @@
     CLBeacon *beacon = self.beacons[indexPath.row];
     
     NSDictionary *beaconData = self.estimoteBeaconData[
-                                [self keyForUUID:beacon.proximityUUID.UUIDString
-                                           major:beacon.major.integerValue
-                                           minor:beacon.minor.integerValue]
-                               ];
+                                                       [self keyForUUID:beacon.proximityUUID.UUIDString
+                                                                  major:beacon.major.integerValue
+                                                                  minor:beacon.minor.integerValue]
+                                                       ];
     
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@",
                            beaconData ? beaconData[kColourString] : @"Beacon"];
     
     cell.detailTextLabel.text =
-        [NSString stringWithFormat:@"Major: %d, Minor: %d, RSSI: %d, Acc: %f",
-            beacon.major.integerValue,
-            beacon.minor.integerValue,
-            beacon.rssi,
-            beacon.accuracy
-         ];
-
+    [NSString stringWithFormat:@"Major: %ld, Minor: %ld, RSSI: %ld, Acc: %f",
+     (long)beacon.major.integerValue,
+     (long)beacon.minor.integerValue,
+     (long)beacon.rssi,
+     beacon.accuracy
+     ];
+    
     
     return cell;
 }
@@ -118,18 +109,17 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView
-                          willDisplayCell:(UITableViewCell *)cell
-                        forRowAtIndexPath:(NSIndexPath *)indexPath
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CLBeacon *beacon = self.beacons[indexPath.row];
     
     NSDictionary *beaconData = self.estimoteBeaconData[
-                               [self keyForUUID:beacon.proximityUUID.UUIDString
-                                          major:beacon.major.integerValue
-                                          minor:beacon.minor.integerValue]
-                               ];
+                                                       [self keyForUUID:beacon.proximityUUID.UUIDString
+                                                                  major:beacon.major.integerValue
+                                                                  minor:beacon.minor.integerValue]
+                                                       ];
     
     cell.contentView.backgroundColor = beaconData[kUIColour];
 }
-
 @end

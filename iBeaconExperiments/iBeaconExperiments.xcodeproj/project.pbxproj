@@ -28,6 +28,8 @@
 		B6A7D8BB19496128000964DA /* BaseExperimentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A7D8BA19496128000964DA /* BaseExperimentViewController.m */; };
 		B6A7D8BE19496148000964DA /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D8BC19496148000964DA /* CoreBluetooth.framework */; };
 		B6A7D8BF19496148000964DA /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6A7D8BD19496148000964DA /* CoreLocation.framework */; };
+		B6AEC3CE194E798800954C45 /* AveragerViewController+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AEC3CD194E798800954C45 /* AveragerViewController+Tests.m */; };
+		B6C0958D194E6B9400C17B62 /* AveragerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B6C0958C194E6B9400C17B62 /* AveragerTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,9 @@
 		B6A7D8BA19496128000964DA /* BaseExperimentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseExperimentViewController.m; sourceTree = "<group>"; };
 		B6A7D8BC19496148000964DA /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		B6A7D8BD19496148000964DA /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		B6AEC3CC194E798800954C45 /* AveragerViewController+Tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AveragerViewController+Tests.h"; sourceTree = "<group>"; };
+		B6AEC3CD194E798800954C45 /* AveragerViewController+Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AveragerViewController+Tests.m"; sourceTree = "<group>"; };
+		B6C0958C194E6B9400C17B62 /* AveragerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AveragerTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,9 +164,12 @@
 		B6A7D8A119493D14000964DA /* iBeaconExperimentsTests */ = {
 			isa = PBXGroup;
 			children = (
+				B6C0958C194E6B9400C17B62 /* AveragerTests.m */,
 				B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */,
 				B6A7D8A719493D14000964DA /* iBeaconExperimentsTests.m */,
 				B6A7D8A219493D14000964DA /* Supporting Files */,
+				B6AEC3CC194E798800954C45 /* AveragerViewController+Tests.h */,
+				B6AEC3CD194E798800954C45 /* AveragerViewController+Tests.m */,
 			);
 			path = iBeaconExperimentsTests;
 			sourceTree = "<group>";
@@ -307,8 +315,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6C0958D194E6B9400C17B62 /* AveragerTests.m in Sources */,
 				B6A7D8A819493D14000964DA /* iBeaconExperimentsTests.m in Sources */,
 				B62644BE194A6FB900DE6E8A /* BaseExperimentTests.m in Sources */,
+				B6AEC3CE194E798800954C45 /* AveragerViewController+Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

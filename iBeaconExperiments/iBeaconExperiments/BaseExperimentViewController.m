@@ -66,7 +66,7 @@
         NSDictionary *green = [NSDictionary dictionaryWithObjects:@[
                                             kGreen,
                                             [UIColor colorWithRed:127.0/255.0f
-                                                            green:255/255.0f
+                                                            green:255.0/255.0f
                                                              blue:154.0/255.0f
                                                             alpha:1.0f],
                                             uuid,
@@ -82,9 +82,9 @@
         
         NSDictionary *purple = [NSDictionary dictionaryWithObjects:@[
                                              kPurple,
-                                             [UIColor colorWithRed:94.0/255.0f
-                                                             green:77.0/255.0f
-                                                              blue:143.0/255.0f
+                                             [UIColor colorWithRed:171.0/255.0f
+                                                             green:121.0/255.0f
+                                                              blue:238.0/255.0f
                                                              alpha:1.0f],
                                              uuid,
                                             @15295,
@@ -145,10 +145,10 @@
                    major:(NSInteger)major
                    minor:(NSInteger)minor
 {
-    NSString *key = [NSString stringWithFormat:@"%@%u%u",
+    NSString *key = [NSString stringWithFormat:@"%@%ld%ld",
                          uuid,
-                         major,
-                         minor];    
+                         (long)major,
+                         (long)minor];
     
     return key;
 }
@@ -176,6 +176,35 @@
         if ([region.identifier isEqualToString:identifier])
             [self.locationManager stopMonitoringForRegion:region];
     }
+}
+
+- (NSString *)proximityStringForIndex:(NSInteger)index
+{
+    NSString *string = @"";
+    
+    switch (index) {
+        case CLProximityImmediate:
+            string = @"Immediate";
+            break;
+            
+        case CLProximityFar:
+            string = @"Far";
+            break;
+            
+        case CLProximityNear:
+            string = @"Near";
+            break;
+            
+        case CLProximityUnknown:
+            string = @"Unknown";
+            break;
+            
+        default:
+            string = @"Out of range";
+            break;
+    }
+    
+    return string;
 }
 
 #pragma mark - Private
