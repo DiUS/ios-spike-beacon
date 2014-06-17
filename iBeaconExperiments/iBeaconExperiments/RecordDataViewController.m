@@ -10,6 +10,7 @@
 #import <EstimoteSDK/ESTBeaconManager.h>
 #import <EstimoteSDK/ESTBeacon.h>
 #import <EstimoteSDK/ESTBeaconRegion.h>
+#import "BeaconConfigViewController.h"
 
 @interface RecordDataViewController () <ESTBeaconManagerDelegate>
 
@@ -233,7 +234,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 */
 
-/*
+
 #pragma mark - Table view delegate
 
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
@@ -241,13 +242,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here, for example:
     // Create the next view controller.
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:<#@"Nib name"#> bundle:nil];
+    BeaconConfigViewController *beaconConfigViewController = [[BeaconConfigViewController alloc] initWithNibName:@"BeaconConfigViewController" bundle:nil];
     
     // Pass the selected object to the new view controller.
     
     // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    [self.navigationController pushViewController:beaconConfigViewController animated:YES];
 }
-*/
 
 @end

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		38B24E5F3E2C48CDB50312C3 /* libPods-iBeaconExperiments.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 944E3D492BD74A3F8D28AE5D /* libPods-iBeaconExperiments.a */; };
+		8A83C09A194ED4ED009703CB /* BeaconConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A83C098194ED4ED009703CB /* BeaconConfigViewController.m */; };
+		8A83C09B194ED4ED009703CB /* BeaconConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A83C099194ED4ED009703CB /* BeaconConfigViewController.xib */; };
 		B62644BE194A6FB900DE6E8A /* BaseExperimentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */; };
 		B62644C1194ABFCC00DE6E8A /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644C0194ABFCC00DE6E8A /* Constants.m */; };
 		B62644C5194AC2C400DE6E8A /* AveragerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B62644C3194AC2C400DE6E8A /* AveragerViewController.m */; };
@@ -48,6 +50,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8A83C097194ED4ED009703CB /* BeaconConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconConfigViewController.h; sourceTree = "<group>"; };
+		8A83C098194ED4ED009703CB /* BeaconConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconConfigViewController.m; sourceTree = "<group>"; };
+		8A83C099194ED4ED009703CB /* BeaconConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BeaconConfigViewController.xib; sourceTree = "<group>"; };
 		944E3D492BD74A3F8D28AE5D /* libPods-iBeaconExperiments.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iBeaconExperiments.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B62644BD194A6FB900DE6E8A /* BaseExperimentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseExperimentTests.m; sourceTree = "<group>"; };
 		B62644BF194ABFCC00DE6E8A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -216,6 +221,9 @@
 				B6340A82194EA14F005B3C50 /* AppleVsEstimoteViewController.h */,
 				B6340A83194EA14F005B3C50 /* AppleVsEstimoteViewController.m */,
 				B6340A84194EA14F005B3C50 /* AppleVsEstimoteViewController.xib */,
+				8A83C097194ED4ED009703CB /* BeaconConfigViewController.h */,
+				8A83C098194ED4ED009703CB /* BeaconConfigViewController.m */,
+				8A83C099194ED4ED009703CB /* BeaconConfigViewController.xib */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -276,6 +284,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = DiUS;
 				TargetAttributes = {
+					B6A7D87E19493D14000964DA = {
+						DevelopmentTeam = HR4LVL7TKY;
+					};
 					B6A7D89919493D14000964DA = {
 						TestTargetID = B6A7D87E19493D14000964DA;
 					};
@@ -308,6 +319,7 @@
 				B6A7D88D19493D14000964DA /* InfoPlist.strings in Resources */,
 				B6A7D89519493D14000964DA /* Images.xcassets in Resources */,
 				B62644C6194AC2C400DE6E8A /* AveragerViewController.xib in Resources */,
+				8A83C09B194ED4ED009703CB /* BeaconConfigViewController.xib in Resources */,
 				B6340A86194EA14F005B3C50 /* AppleVsEstimoteViewController.xib in Resources */,
 				B6340A7E194E9F94005B3C50 /* RecordDataViewController.xib in Resources */,
 			);
@@ -365,6 +377,7 @@
 				B62644C1194ABFCC00DE6E8A /* Constants.m in Sources */,
 				B6A7D8BB19496128000964DA /* BaseExperimentViewController.m in Sources */,
 				B6A7D89319493D14000964DA /* AppDelegate.m in Sources */,
+				8A83C09A194ED4ED009703CB /* BeaconConfigViewController.m in Sources */,
 				B6A7D88F19493D14000964DA /* main.m in Sources */,
 				B6A7D8B619494358000964DA /* SharedUUIDRecognitionViewController.m in Sources */,
 				B6340A85194EA14F005B3C50 /* AppleVsEstimoteViewController.m in Sources */,
@@ -491,11 +504,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iBeaconExperiments/iBeaconExperiments-Prefix.pch";
 				INFOPLIST_FILE = "iBeaconExperiments/iBeaconExperiments-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -506,11 +522,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iBeaconExperiments/iBeaconExperiments-Prefix.pch";
 				INFOPLIST_FILE = "iBeaconExperiments/iBeaconExperiments-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
