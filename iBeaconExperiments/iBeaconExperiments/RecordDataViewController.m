@@ -12,14 +12,18 @@
 #import <EstimoteSDK/ESTBeaconRegion.h>
 #import "BeaconConfigViewController.h"
 
-@interface RecordDataViewController () <ESTBeaconManagerDelegate>
+@interface RecordDataViewController () <ESTBeaconManagerDelegate,
+ESTBeaconDelegate, UIActionSheetDelegate>
 
 @property (nonatomic) ESTBeaconManager *estBeaconManager;
 @property (nonatomic) NSArray *sections;
 @property (nonatomic) NSMutableArray *estBeacons;
 @property (nonatomic) BOOL isRecording;
 @property (nonatomic) NSTimer *recordingTimer;
+@property (nonatomic) NSDate *recordDate;
 @property (nonatomic, weak) UITextField *focussedField;
+@property (nonatomic) NSMutableString *recordedData;
+@property (nonatomic) NSArray *beaconsForSync;
 
 @end
 
@@ -46,18 +50,6 @@
     [self.estBeaconManager startRangingBeaconsInRegion:region];
     
     self.isRecording = NO;
-}
-
-#pragma mark - ESTBeaconManagerDataSource
-
--(void)beaconManager:(ESTBeaconManager *)manager
-     didRangeBeacons:(NSArray *)beacons
-            inRegion:(ESTBeaconRegion *)region
-{
-    [self.estBeacons removeAllObjects];
-    [self.estBeacons addObjectsFromArray:beacons];
-    
-    [self.tableView reloadData];
 }
 
 #pragma mark - Private
@@ -125,10 +117,13 @@
         
         // once complete setup the mutable string for recording
         // start timer
+        [self startRecording];
     }
     else
     {
         buttonItem = [self barButtonItemForStyle:UIBarButtonSystemItemSave];
+        if (self.recordingTimer)
+            [self stopRecording];
     }
     
     self.navigationItem.rightBarButtonItem = buttonItem;
@@ -137,22 +132,96 @@
 
 - (void)startRecording
 {
-    double interval = [self.intervalField.text doubleValue];
     
-    if (interval == 0)
-        interval = DEFAULT_INTERVAL;
-    
-    self.recordingTimer = [NSTimer scheduledTimerWithTimeInterval:interval
+    self.elapsedTimeField.text = [NSString stringWithFormat:@"0"];
+    self.recordDate = [NSDate date];
+    self.recordingTimer = [NSTimer scheduledTimerWithTimeInterval:DEFAULT_INTERVAL
                                               target:self
                                             selector:@selector(timerInterval:)
                                             userInfo:nil
                                              repeats:YES];
+    // Init with header
+    self.recordedData = [NSMutableString
+                 stringWithFormat:@"%@, %@, %@, %@, %@, %@, %@, %@, %@, %@\n",
+                         @"UUID",
+                         @"Major",
+                         @"Minor",
+                         @"Colour",
+                         @"Time",
+                         @"Proximity",
+                         @"RSSI",
+                         @"Accuracy",
+                         @"Distance From Beacon (Real World)",
+                         @"txPower"
+                         ];
+    
 }
 
 - (void)stopRecording
 {
     if (self.recordingTimer)
         [self.recordingTimer invalidate];
+    
+    NSString *dateString = [self.recordDate description];
+    
+    NSString *filename = [NSString stringWithFormat:@"%@_%@",
+                          self.filenameField.text,
+                          dateString
+                          ];
+    
+//    [self writeCSVString:[self.recordedData copy] forFilename:filename];
+}
+
+- (void)logData
+{
+    for (ESTBeacon *beacon in self.estBeacons)
+    {
+        [self addDataRowForBeacon:beacon];
+    }
+}
+
+- (void)addDataRowForBeacon:(ESTBeacon *)beacon
+{
+    NSString *key = [self keyForUUID:beacon.proximityUUID.UUIDString
+                               major:beacon.major.integerValue
+                               minor:beacon.minor.integerValue];
+
+    NSDictionary *beaconData = self.estimoteBeaconData[key];
+    NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:self.recordDate];
+    interval = roundToTwo(interval);
+    NSNumber *txPowerLevel = beaconData[kTxPower];
+    
+    NSString *uuid = beacon.proximityUUID.UUIDString;
+    NSString *major = [NSString stringWithFormat:@"%d", beacon.major.intValue];
+    NSString *minor = [NSString stringWithFormat:@"%d", beacon.minor.intValue];
+    NSString *colour = beaconData[kColourString];
+    NSString *time = [NSString stringWithFormat:@"%f", interval];
+    NSString *proximity = [NSString stringWithFormat:@"%d", beacon.proximity];
+    NSString *rssi = [NSString stringWithFormat:@"%d", beacon.rssi];
+    NSString *accuracy = [NSString stringWithFormat:@"%f", roundToTwo(beacon.distance.floatValue)];
+    NSString *distance = [NSString stringWithFormat:@"%@", self.distanceField.text];
+    NSString *txPower = [NSString stringWithFormat:@"%d", txPowerLevel.intValue];
+    
+    NSString *row = [NSMutableString
+                     stringWithFormat:@"%@, %@, %@, %@, %@, %@, %@, %@, %@, %@\n",
+                     uuid,
+                     major,
+                     minor,
+                     colour,
+                     time,
+                     proximity,
+                     rssi,
+                     accuracy,
+                     distance,
+                     txPower
+                     ];
+    
+    [self.recordedData appendString:row];
+}
+
+float roundToTwo(float num)
+{
+    return round(100 * num) / 100;
 }
 
 #pragma mark Target Actions
@@ -170,7 +239,84 @@
 
 - (void)timerInterval:(id)sender
 {
+    NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:self.recordDate];
     
+    self.elapsedTimeField.text = [NSString stringWithFormat:@"%d sec", (int)interval];
+}
+
+// FIXME: Not yet implemented. Only one beacon is connecting.
+- (IBAction)syncTxPower:(id)sender
+{
+    self.beaconsForSync = [NSArray arrayWithArray:self.estBeacons];
+    
+    for (ESTBeacon *beacon in self.beaconsForSync)
+    {
+        DLog(@"Start Sync");
+        beacon.delegate = self;
+        [beacon connectToBeacon];
+    }
+}
+
+// FIXME: Files aren't yet being deleted.
+- (IBAction)deleteFiles:(id)sender
+{
+    [[[UIActionSheet alloc] initWithTitle:@"Delete Files"
+                                delegate:self
+                       cancelButtonTitle:@"Cancel"
+                  destructiveButtonTitle:@"Delete"
+                       otherButtonTitles:nil]
+     showFromToolbar:self.navigationController.toolbar];
+}
+
+#pragma mark - ESTBeaconManagerDelegate
+
+-(void)beaconManager:(ESTBeaconManager *)manager
+     didRangeBeacons:(NSArray *)beacons
+            inRegion:(ESTBeaconRegion *)region
+{
+    [self.estBeacons removeAllObjects];
+    [self.estBeacons addObjectsFromArray:beacons];
+    
+    if (self.isRecording)
+        [self logData];
+    
+    [self.tableView reloadData];
+}
+
+#pragma mark ESTBeaconDelegate
+
+- (void)beaconConnectionDidSucceeded:(ESTBeacon *)beacon
+{
+    NSString *key = [self keyForUUID:beacon.proximityUUID.UUIDString
+                               major:beacon.major.integerValue
+                               minor:beacon.minor.integerValue
+                     ];
+    NSMutableDictionary *beaconData = self.estimoteBeaconData[key];
+    
+    beaconData[kTxPower] = beacon.power;
+    
+    DLog(@"Did Connect to %@ beacon. TxPower: %d",
+         beaconData[kColourString],
+         beacon.power.intValue);
+    
+    [beacon disconnectBeacon];
+    
+}
+
+- (void)beaconDidDisconnect:(ESTBeacon *)beacon withError:(NSError *)error
+{
+    beacon.delegate = nil;
+    DLog(@"Did Disconnect beacon");
+    self.beaconsForSync = nil;
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet
+clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+        [self deleteAllFiles];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -178,6 +324,8 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
+    
+    self.isRecording = self.isRecording;
     
     return YES;
 }
@@ -257,10 +405,6 @@ titleForHeaderInSection:(NSInteger)section
     beaconAccuracy = [NSString stringWithFormat:@"%f",
                       beacon.distance.floatValue];
     
-    DLog(@"MeasuredPx: %@", beacon.measuredPower);
-    
-    
-    
     cell.textLabel.text = beaconText;
     
     cell.detailTextLabel.text =
@@ -295,59 +439,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         cell.contentView.backgroundColor = beaconData[kUIColour];
     }
 }
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 
 #pragma mark - Table view delegate
 
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here, for example:

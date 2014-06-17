@@ -65,7 +65,7 @@
     {
         NSString *uuid = [[self genericUUID] UUIDString];
         
-        NSDictionary *green = [NSDictionary dictionaryWithObjects:@[
+        NSMutableDictionary *green = [NSMutableDictionary dictionaryWithObjects:@[
                                             kGreen,
                                             [UIColor colorWithRed:127.0/255.0f
                                                             green:255.0/255.0f
@@ -82,7 +82,7 @@
                                             kMinor]
                                ];
         
-        NSDictionary *purple = [NSDictionary dictionaryWithObjects:@[
+        NSMutableDictionary *purple = [NSMutableDictionary dictionaryWithObjects:@[
                                              kPurple,
                                              [UIColor colorWithRed:171.0/255.0f
                                                              green:121.0/255.0f
@@ -99,7 +99,7 @@
                                             kMinor]
                                 ];
         
-        NSDictionary *blue = [NSDictionary dictionaryWithObjects:@[
+        NSMutableDictionary *blue = [NSMutableDictionary dictionaryWithObjects:@[
                                            kBlue,
                                            [UIColor colorWithRed:133.0/255.0f
                                                            green:222.0/255.0f
@@ -212,7 +212,7 @@
 
 #pragma mark - Private
 
-#pragma mark File Writing
+#pragma mark File Handling
 
 - (NSFileManager *)fileManager
 {
@@ -257,6 +257,43 @@
         NSLog(@"Failed to store the file. Error = %@", error);
     
 
+}
+
+- (NSArray *)filesInDocumentsFolder
+{
+    
+    NSArray *directoryContent = [self.fileManager
+                                 contentsOfDirectoryAtPath:[self documentFolderURL]
+                                 error:NULL];
+    
+    NSMutableArray *paths = [NSMutableArray array];
+    
+    for (int count = 0; count < (int)[directoryContent count]; count++)
+    {
+        NSString *filename = [directoryContent objectAtIndex:count];
+        
+        if ([[filename pathExtension] isEqualToString:@"csv"])
+        {
+            [paths addObject:[[self documentFolderURL]
+                              stringByAppendingPathComponent:filename]];
+        }
+    }
+    
+    DLog(@"Paths: %@", paths);
+    
+    return directoryContent;
+}
+
+- (void)deleteAllFiles
+{
+    for (NSString *path in [self filesInDocumentsFolder])
+    {
+        NSError *error;
+        BOOL success = [self.fileManager removeItemAtPath:path
+                                     error:&error];
+        
+        DLog(@"Was Removed: %@", success ? @"YES" : @"NO");
+    }
 }
 
 #pragma mark - CLLocationManagerDelegate

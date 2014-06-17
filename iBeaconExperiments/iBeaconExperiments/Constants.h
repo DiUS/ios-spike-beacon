@@ -22,5 +22,6 @@ extern NSString *kColourString;
 extern NSString *kProximity;
 extern NSString *kAccuracy;
 extern NSString *kRSSI;
+extern NSString *kTxPower;
 
 @end

@@ -23,5 +23,7 @@
 - (NSString *)proximityStringForIndex:(NSInteger)index;
 - (void)writeCSVString:(NSString *)csvString
            forFilename:(NSString *)filename;
+- (NSArray *)filesInDocumentsFolder;
+- (void)deleteAllFiles;
 
 @end
