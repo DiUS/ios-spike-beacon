@@ -211,6 +211,8 @@
 
 #pragma mark - Private
 
+#pragma mark File Writing
+
 - (NSFileManager *)fileManager
 {
     if (!_fileManager)
@@ -219,18 +221,41 @@
     return _fileManager;
 }
 
-- (NSURL *)documentFolderURL
+- (NSString *)documentFolderURL
 {
-    NSArray *urls = [self.fileManager URLsForDirectory:NSDocumentDirectory
-                                             inDomains:NSUserDomainMask];
-    NSURL *documentsFolder = nil;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+                            (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsFolder = nil;
     
-    if ([urls count] > 0)
-        documentsFolder = urls[0];
+    if ([paths count] > 0)
+        documentsFolder = [paths objectAtIndex:0];
     else
         NSLog(@"Could not find the Documents folder.");
     
     return documentsFolder;
+}
+
+// assumes well formed csvString
+- (void)writeCSVString:(NSString *)csvString
+           forFilename:(NSString *)filename
+{
+
+    NSString *filePath = [[self documentFolderURL]
+                          stringByAppendingPathComponent:
+                          [NSString stringWithFormat:@"%@.csv",
+                           filename]];
+    
+    NSError *error = nil;
+    BOOL succeeded = [csvString writeToFile:filePath
+                                    atomically:NO
+                                      encoding:NSUTF8StringEncoding
+                                         error:&error];
+    if (succeeded)
+        NSLog(@"Successfully stored the file at: %@", filePath);
+    else
+        NSLog(@"Failed to store the file. Error = %@", error);
+    
+
 }
 
 #pragma mark - CLLocationManagerDelegate

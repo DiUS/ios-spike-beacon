@@ -21,5 +21,7 @@
                    major:(NSInteger)major
                    minor:(NSInteger)minor;
 - (NSString *)proximityStringForIndex:(NSInteger)index;
+- (void)writeCSVString:(NSString *)csvString
+           forFilename:(NSString *)filename;
 
 @end

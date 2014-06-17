@@ -35,6 +35,7 @@
 {
     
     self.baseVC = nil;
+    self.uuidString = nil;
     
     [super tearDown];
 }
@@ -55,6 +56,11 @@
                   resultKey: %@, but it does not",
                   testKey,
                   resultKey);
+}
+
+- (void)testWritesFile
+{
+
 }
 
 @end
