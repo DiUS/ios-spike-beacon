@@ -17,10 +17,15 @@
 @property (nonatomic) ESTBeaconManager *estBeaconManager;
 @property (nonatomic) NSArray *sections;
 @property (nonatomic) NSMutableArray *estBeacons;
+@property (nonatomic) BOOL isRecording;
+@property (nonatomic) NSTimer *recordingTimer;
+@property (nonatomic, weak) UITextField *focussedField;
 
 @end
 
 @implementation RecordDataViewController
+
+#define DEFAULT_INTERVAL 1.0
 
 - (void)viewDidLoad
 {
@@ -40,6 +45,7 @@
     // when beacon ranged beaconManager:didRangeBeacons:inRegion: invoked
     [self.estBeaconManager startRangingBeaconsInRegion:region];
     
+    self.isRecording = NO;
 }
 
 #pragma mark - ESTBeaconManagerDataSource
@@ -54,16 +60,36 @@
     [self.tableView reloadData];
 }
 
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [textField resignFirstResponder];
-    
-    return YES;
-}
-
 #pragma mark - Private
+
+- (UIBarButtonItem *)barButtonItemForStyle:(NSInteger)style
+{
+//    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc]
+//                                        initWithBarButtonSystemItem:style
+//                                        target:self
+//                                        action:@selector(didPressRightBarButtonItem:)];
+    
+    NSString *title = nil;
+    
+    switch (style) {
+        case UIBarButtonSystemItemSave:
+            title = @"Record";
+            break;
+        case UIBarButtonSystemItemStop:
+            title = @"Stop";
+            break;
+        default:
+            title = @"Done";
+            break;
+    }
+    
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:title
+                                 style:UIBarButtonItemStylePlain
+                                target:self
+                                action:@selector(didPressRightBarButtonItem:)];
+    
+    return item;
+}
 
 - (NSMutableArray *)estBeacons
 {
@@ -81,6 +107,90 @@
     }
     
     return _sections;
+}
+
+- (void)setIsRecording:(BOOL)isRecording
+{
+    _isRecording = isRecording;
+    
+    UIBarButtonItem *buttonItem = nil;
+    
+    if (_isRecording)
+    {
+        buttonItem = [self barButtonItemForStyle:UIBarButtonSystemItemStop];
+        
+        // connect to each of the beacons
+        // retrieve the txPower value and store that in a dict with
+        // major/minor id
+        
+        // once complete setup the mutable string for recording
+        // start timer
+    }
+    else
+    {
+        buttonItem = [self barButtonItemForStyle:UIBarButtonSystemItemSave];
+    }
+    
+    self.navigationItem.rightBarButtonItem = buttonItem;
+    
+}
+
+- (void)startRecording
+{
+    double interval = [self.intervalField.text doubleValue];
+    
+    if (interval == 0)
+        interval = DEFAULT_INTERVAL;
+    
+    self.recordingTimer = [NSTimer scheduledTimerWithTimeInterval:interval
+                                              target:self
+                                            selector:@selector(timerInterval:)
+                                            userInfo:nil
+                                             repeats:YES];
+}
+
+- (void)stopRecording
+{
+    if (self.recordingTimer)
+        [self.recordingTimer invalidate];
+}
+
+#pragma mark Target Actions
+
+- (void)didPressRightBarButtonItem:(UIBarButtonItem *)sender
+{
+    if ([sender.title isEqualToString:@"Done"])
+    {
+        [self textFieldShouldReturn:self.focussedField];
+        self.isRecording = self.isRecording;
+    }
+    else
+        self.isRecording = !self.isRecording;
+}
+
+- (void)timerInterval:(id)sender
+{
+    
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if (self.isRecording)
+        return NO;
+    
+    self.navigationItem.rightBarButtonItem = [self barButtonItemForStyle:0];
+    self.focussedField = textField;
+    
+    return YES;
 }
 
 #pragma mark - Table view data source

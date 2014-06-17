@@ -59,7 +59,7 @@
     return _locationManager;
 }
 
-- (NSDictionary *)estimoteBeaconData
+- (NSMutableDictionary *)estimoteBeaconData
 {
     if (!_estimoteBeaconData)
     {
@@ -131,12 +131,13 @@
                                 minor:((NSNumber *)blue[kMinor]).integerValue
                                ];
         
-        _estimoteBeaconData = [NSDictionary dictionaryWithObjects:@[green,
-                                                                    purple,
-                                                                    blue]
-                                                          forKeys:@[greenKey,
-                                                                    purpleKey,
-                                                                    blueKey]
+        _estimoteBeaconData = [NSMutableDictionary
+                               dictionaryWithObjects:@[green,
+                                                       purple,
+                                                        blue]
+                                              forKeys:@[greenKey,
+                                                        purpleKey,
+                                                        blueKey]
                                ];
     }
     

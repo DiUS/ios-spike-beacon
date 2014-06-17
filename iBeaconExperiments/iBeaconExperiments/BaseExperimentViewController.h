@@ -11,7 +11,7 @@
 @interface BaseExperimentViewController : UIViewController <CLLocationManagerDelegate>
 
 @property (nonatomic) CLLocationManager *locationManager;
-@property (nonatomic) NSDictionary *estimoteBeaconData;
+@property (nonatomic) NSMutableDictionary *estimoteBeaconData;
 
 - (NSUUID *)genericUUID;
 - (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID

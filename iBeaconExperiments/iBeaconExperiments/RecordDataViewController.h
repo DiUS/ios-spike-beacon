@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *distanceField;
 @property (weak, nonatomic) IBOutlet UITextField *filenameField;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UITextField *intervalField;
 
 @end
