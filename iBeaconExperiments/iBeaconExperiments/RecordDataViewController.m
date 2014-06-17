@@ -451,6 +451,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     BeaconConfigViewController *beaconConfigViewController = [[BeaconConfigViewController alloc] initWithNibName:@"BeaconConfigViewController" bundle:nil];
     
     // Pass the selected object to the new view controller.
+    beaconConfigViewController.beacon = self.estBeacons[indexPath.row];
     
     // Push the view controller.
     [self.navigationController pushViewController:beaconConfigViewController animated:YES];
