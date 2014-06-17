@@ -86,11 +86,13 @@
     self.stateLabel.text = @"Connected";
     self.uuidLabel.text = [[self.beacon proximityUUID] UUIDString];
     self.uuidLabel.backgroundColor = beaconData[kUIColour];
+    self.updateButton.enabled = YES;
     
     [self.beacon readBeaconPowerWithCompletion:^(ESTBeaconPower value, NSError *error)
     {
         NSNumber *powerLevel = [BeaconConfigViewController numberForBeaconPower:value];
         self.powerLabel.text = powerLevel.stringValue;
+        self.powerStepper.value = powerLevel.doubleValue;
     }];
     
 }
