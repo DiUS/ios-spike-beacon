@@ -14,6 +14,6 @@
 
 @property (strong, nonatomic) ESTBeacon *beacon;
 
-
++ (NSNumber *)numberForBeaconPower:(ESTBeaconPower)power;
 
 @end

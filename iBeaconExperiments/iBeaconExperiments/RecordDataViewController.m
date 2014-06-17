@@ -23,7 +23,7 @@ ESTBeaconDelegate, UIActionSheetDelegate>
 @property (nonatomic) NSDate *recordDate;
 @property (nonatomic, weak) UITextField *focussedField;
 @property (nonatomic) NSMutableString *recordedData;
-@property (nonatomic) NSArray *beaconsForSync;
+@property (nonatomic) NSMutableArray *beaconsForSync;
 
 @end
 
@@ -169,7 +169,7 @@ ESTBeaconDelegate, UIActionSheetDelegate>
                           dateString
                           ];
     
-//    [self writeCSVString:[self.recordedData copy] forFilename:filename];
+    [self writeCSVString:[self.recordedData copy] forFilename:filename];
 }
 
 - (void)logData
@@ -244,17 +244,16 @@ float roundToTwo(float num)
     self.elapsedTimeField.text = [NSString stringWithFormat:@"%d sec", (int)interval];
 }
 
-// FIXME: Not yet implemented. Only one beacon is connecting.
+// TODO: Should implement some HUD for progess updates on connection.
 - (IBAction)syncTxPower:(id)sender
 {
-    self.beaconsForSync = [NSArray arrayWithArray:self.estBeacons];
+    self.beaconsForSync = [NSMutableArray arrayWithArray:self.estBeacons];
     
-    for (ESTBeacon *beacon in self.beaconsForSync)
-    {
-        DLog(@"Start Sync");
-        beacon.delegate = self;
-        [beacon connectToBeacon];
-    }
+    
+    ESTBeacon *beacon = [self.beaconsForSync lastObject];
+    
+    beacon.delegate = self;
+    [beacon connectToBeacon];
 }
 
 // FIXME: Files aren't yet being deleted.
@@ -293,21 +292,30 @@ float roundToTwo(float num)
                      ];
     NSMutableDictionary *beaconData = self.estimoteBeaconData[key];
     
-    beaconData[kTxPower] = beacon.power;
-    
-    DLog(@"Did Connect to %@ beacon. TxPower: %d",
-         beaconData[kColourString],
-         beacon.power.intValue);
-    
-    [beacon disconnectBeacon];
-    
+    [beacon readBeaconPowerWithCompletion:^(ESTBeaconPower value, NSError *error)
+     {
+         NSNumber *powerLevel = [BeaconConfigViewController numberForBeaconPower:value];
+         beaconData[kTxPower] = powerLevel;
+         
+         DLog(@"Did Connect to %@ beacon. TxPower: %d",
+              beaconData[kColourString],
+              beacon.power.intValue);
+         
+         [beacon disconnectBeacon];
+     }];
 }
 
 - (void)beaconDidDisconnect:(ESTBeacon *)beacon withError:(NSError *)error
 {
-    beacon.delegate = nil;
-    DLog(@"Did Disconnect beacon");
-    self.beaconsForSync = nil;
+    [self.beaconsForSync removeLastObject];
+    
+    if (self.beaconsForSync.count != 0)
+    {
+        ESTBeacon *beacon = [self.beaconsForSync lastObject];
+        
+        beacon.delegate = self;
+        [beacon connectToBeacon];
+    }
 }
 
 #pragma mark - UIActionSheetDelegate
