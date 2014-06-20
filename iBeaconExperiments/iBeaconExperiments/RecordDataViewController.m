@@ -10,7 +10,9 @@
 #import <EstimoteSDK/ESTBeaconManager.h>
 #import <EstimoteSDK/ESTBeacon.h>
 #import <EstimoteSDK/ESTBeaconRegion.h>
+#import <ESTBeaconRegion.h>
 #import "BeaconConfigViewController.h"
+#import <MBProgressHUD.h>
 
 @interface RecordDataViewController () <ESTBeaconManagerDelegate,
 ESTBeaconDelegate, UIActionSheetDelegate>
@@ -24,12 +26,15 @@ ESTBeaconDelegate, UIActionSheetDelegate>
 @property (nonatomic, weak) UITextField *focussedField;
 @property (nonatomic) NSMutableString *recordedData;
 @property (nonatomic) NSMutableArray *beaconsForSync;
+@property (nonatomic) ESTBeaconRegion *region;
 
 @end
 
 @implementation RecordDataViewController
 
 #define DEFAULT_INTERVAL 1.0
+
+#pragma mark - Overrides
 
 - (void)viewDidLoad
 {
@@ -40,16 +45,27 @@ ESTBeaconDelegate, UIActionSheetDelegate>
     self.estBeaconManager = [[ESTBeaconManager alloc] init];
     self.estBeaconManager.delegate = self;
     
-    // create sample region object (you can additionaly pass major / minor values)
-    ESTBeaconRegion* region = [[ESTBeaconRegion alloc]
-                               initWithProximityUUID:[self genericUUID]
-                               identifier:@"sdkBeacons"];
+    self.region = [[ESTBeaconRegion alloc]
+                        initWithProximityUUID:[self genericUUID]
+                        identifier:@"sdkBeacons"];
     
     // start looking for estimtoe beacons in region
     // when beacon ranged beaconManager:didRangeBeacons:inRegion: invoked
-    [self.estBeaconManager startRangingBeaconsInRegion:region];
     
     self.isRecording = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.estBeaconManager startRangingBeaconsInRegion:self.region];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [self.estBeaconManager stopRangingBeaconsInRegion:self.region];
 }
 
 #pragma mark - Private
@@ -244,9 +260,16 @@ float roundToTwo(float num)
     self.elapsedTimeField.text = [NSString stringWithFormat:@"%d sec", (int)interval];
 }
 
-// TODO: Should implement some HUD for progess updates on connection.
+
 - (IBAction)syncTxPower:(id)sender
 {
+    [self.estBeaconManager stopRangingBeaconsInRegion:self.region];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    hud.mode = MBProgressHUDModeIndeterminate;
+    hud.labelText = @"Syncing TxPower";
+    
     self.beaconsForSync = [NSMutableArray arrayWithArray:self.estBeacons];
     
     
@@ -307,6 +330,23 @@ float roundToTwo(float num)
 
 - (void)beaconDidDisconnect:(ESTBeacon *)beacon withError:(NSError *)error
 {
+    NSString *key = [self keyForUUID:beacon.proximityUUID.UUIDString
+                               major:beacon.major.integerValue
+                               minor:beacon.minor.integerValue
+                     ];
+    NSMutableDictionary *beaconData = self.estimoteBeaconData[key];
+    
+    DLog(@"Did disconnect from %@ Beacon. TxPower: %@",
+         beaconData[kColourString],
+         beaconData[kTxPower]
+         );
+    
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    hud.labelText = [NSString
+         stringWithFormat:@"%@ Beacon synced",
+        [beaconData[kColourString] uppercaseString]
+    ];
+    
     [self.beaconsForSync removeLastObject];
     
     if (self.beaconsForSync.count != 0)
@@ -315,6 +355,12 @@ float roundToTwo(float num)
         
         beacon.delegate = self;
         [beacon connectToBeacon];
+        
+    }
+    else
+    {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self.estBeaconManager startRangingBeaconsInRegion:self.region];
     }
 }
 
@@ -405,9 +451,10 @@ titleForHeaderInSection:(NSInteger)section
     
     beaconText = [NSString stringWithFormat:@"%@",
                   beaconData ? beaconData[kColourString] : @"Beacon"];
-    beaconMeasuredPower = [NSString stringWithFormat:@"%f",
-                   beacon.measuredPower.floatValue];
-    beaconTxPower = @"?";
+    beaconMeasuredPower = [NSString stringWithFormat:@"%d",
+                   beacon.measuredPower.intValue];
+    beaconTxPower = [NSString stringWithFormat:@"%@",
+                     beaconData[kTxPower]];
     beaconRSSI = [NSString stringWithFormat:@"%ld",
                   (long)beacon.rssi];
     beaconAccuracy = [NSString stringWithFormat:@"%f",

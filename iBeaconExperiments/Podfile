@@ -4,6 +4,7 @@ platform :ios, "7.0"
 target "iBeaconExperiments" do
 
 pod 'EstimoteSDK'
+pod 'MBProgressHUD', '~> 0.8'
 
 end
 

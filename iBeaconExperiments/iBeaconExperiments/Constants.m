@@ -23,5 +23,6 @@ NSString const *kProximity = @"proximity";
 NSString const *kAccuracy = @"accuracy";
 NSString const *kRSSI = @"rssi";
 NSString const *kTxPower = @"TxPower";
+NSString const *kMeasuredPower = @"MeasuredPower";
 
 @end

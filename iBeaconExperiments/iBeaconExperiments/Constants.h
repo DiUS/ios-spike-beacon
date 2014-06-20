@@ -23,5 +23,6 @@ extern NSString *kProximity;
 extern NSString *kAccuracy;
 extern NSString *kRSSI;
 extern NSString *kTxPower;
+extern NSString *kMeasuredPower;
 
 @end
