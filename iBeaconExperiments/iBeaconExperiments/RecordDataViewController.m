@@ -15,7 +15,7 @@
 #import <MBProgressHUD.h>
 
 @interface RecordDataViewController () <ESTBeaconManagerDelegate,
-ESTBeaconDelegate, UIActionSheetDelegate>
+ESTBeaconDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) ESTBeaconManager *estBeaconManager;
 @property (nonatomic) NSArray *sections;
@@ -53,6 +53,12 @@ ESTBeaconDelegate, UIActionSheetDelegate>
     // when beacon ranged beaconManager:didRangeBeacons:inRegion: invoked
     
     self.isRecording = NO;
+    self.distanceStepper.stepValue = self.distanceIntervalInput.text.floatValue;
+    self.distanceStepper.minimumValue = 0;
+    self.distanceStepper.maximumValue = 1000;
+    self.distanceStepper.value = 0;
+    
+    [self stepperValueChanged:self.distanceStepper];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -119,7 +125,10 @@ ESTBeaconDelegate, UIActionSheetDelegate>
 
 - (void)setIsRecording:(BOOL)isRecording
 {
-    _isRecording = isRecording;
+    if (_isRecording != isRecording)
+    {
+        _isRecording = isRecording;
+    }
     
     UIBarButtonItem *buttonItem = nil;
     
@@ -176,9 +185,29 @@ ESTBeaconDelegate, UIActionSheetDelegate>
 - (void)stopRecording
 {
     if (self.recordingTimer)
+    {
         [self.recordingTimer invalidate];
+        self.recordingTimer = nil;
+    }
     
-    NSString *dateString = [self.recordDate description];
+    NSDateComponents *components = [[NSCalendar currentCalendar]
+                components:(
+                            NSCalendarUnitYear |
+                            NSCalendarUnitMonth |
+                            NSCalendarUnitDay |
+                            NSCalendarUnitHour |
+                            NSCalendarUnitMinute |
+                            NSCalendarUnitSecond)
+                                    fromDate:self.recordDate];
+    
+    NSString *dateString = [NSString stringWithFormat:@"%ld-%ld-%ld_%ld.%ld.%ld",
+                            [components year],
+                            [components month],
+                            [components day],
+                            [components hour],
+                            [components minute],
+                            [components second]
+                            ];
     
     NSString *filename = [NSString stringWithFormat:@"%@_%@",
                           self.filenameField.text,
@@ -186,6 +215,13 @@ ESTBeaconDelegate, UIActionSheetDelegate>
                           ];
     
     [self writeCSVString:[self.recordedData copy] forFilename:filename];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = [NSString stringWithFormat:@"Saved %@", filename];
+    
+    [hud hide:YES afterDelay:2.0];
 }
 
 - (void)logData
@@ -212,10 +248,10 @@ ESTBeaconDelegate, UIActionSheetDelegate>
     NSString *minor = [NSString stringWithFormat:@"%d", beacon.minor.intValue];
     NSString *colour = beaconData[kColourString];
     NSString *time = [NSString stringWithFormat:@"%f", interval];
-    NSString *proximity = [NSString stringWithFormat:@"%d", beacon.proximity];
-    NSString *rssi = [NSString stringWithFormat:@"%d", beacon.rssi];
+    NSString *proximity = [NSString stringWithFormat:@"%d", (int)beacon.proximity];
+    NSString *rssi = [NSString stringWithFormat:@"%ld", beacon.rssi];
     NSString *accuracy = [NSString stringWithFormat:@"%f", roundToTwo(beacon.distance.floatValue)];
-    NSString *distance = [NSString stringWithFormat:@"%@", self.distanceField.text];
+    NSString *distance = [NSString stringWithFormat:@"%@", self.distanceIntervalInput.text];
     NSString *txPower = [NSString stringWithFormat:@"%d", txPowerLevel.intValue];
     
     NSString *row = [NSMutableString
@@ -250,7 +286,31 @@ float roundToTwo(float num)
         self.isRecording = self.isRecording;
     }
     else
+    {
+        for (ESTBeacon *beacon in self.estBeacons)
+        {
+            if (!self.isRecording)
+            {
+                NSDictionary *beaconData = self.estimoteBeaconData[
+                           [self keyForUUID:[[beacon proximityUUID] UUIDString]
+                                      major:[beacon major].integerValue
+                                      minor:[beacon minor].integerValue]
+                           ];
+                
+                if (beaconData[kTxPower] == nil)
+                {
+                    [[[UIAlertView alloc] initWithTitle:@"No TxPower Value Set"
+                                                message:@"If you want to set a value sync now, otherwise ignore to begin recording anyway."
+                                               delegate:self
+                                      cancelButtonTitle:@"Dismiss"
+                                      otherButtonTitles:@"Sync now", @"Ignore",  nil] show];
+                    return;
+                }
+            }
+                
+        }
         self.isRecording = !self.isRecording;
+    }
 }
 
 - (void)timerInterval:(id)sender
@@ -277,6 +337,11 @@ float roundToTwo(float num)
     
     beacon.delegate = self;
     [beacon connectToBeacon];
+}
+- (IBAction)stepperValueChanged:(UIStepper *)sender
+{
+    self.distanceLabel.text = [NSString stringWithFormat:@"%dm",
+                               (int)self.distanceStepper.value];
 }
 
 // FIXME: Files aren't yet being deleted.
@@ -359,7 +424,7 @@ float roundToTwo(float num)
     }
     else
     {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [[MBProgressHUD HUDForView:self.view] hide:YES afterDelay:1];
         [self.estBeaconManager startRangingBeaconsInRegion:self.region];
     }
 }
@@ -373,6 +438,21 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         [self deleteAllFiles];
 }
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Ignore"])
+    {
+        self.isRecording = YES;
+    }
+    else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Sync now"])
+    {
+        [self syncTxPower:self];
+    }
+}
+
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -380,6 +460,15 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     [textField resignFirstResponder];
     
     self.isRecording = self.isRecording;
+    
+    if ([textField isEqual:self.distanceIntervalInput])
+    {
+        self.distanceStepper.stepValue = roundToTwo(self.distanceIntervalInput.text.floatValue);
+        DLog(@"Step value: %f, Input: %f",
+             self.distanceStepper.stepValue,
+             self.distanceIntervalInput.text.floatValue
+             );
+    }
     
     return YES;
 }

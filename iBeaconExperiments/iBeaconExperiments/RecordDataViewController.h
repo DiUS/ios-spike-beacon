@@ -12,9 +12,11 @@
 @interface RecordDataViewController : BaseExperimentViewController <UITextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet UIView *header;
-@property (weak, nonatomic) IBOutlet UITextField *distanceField;
+@property (weak, nonatomic) IBOutlet UITextField *distanceIntervalInput;
 @property (weak, nonatomic) IBOutlet UITextField *filenameField;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UILabel *elapsedTimeField;
+@property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
+@property (weak, nonatomic) IBOutlet UIStepper *distanceStepper;
 
 @end
